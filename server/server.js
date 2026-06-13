@@ -224,6 +224,20 @@ app.get('/api/collage/download/:filename', (req, res) => {
   }
 });
 
+// Serve static assets from the React client build in production
+const CLIENT_DIST_DIR = path.join(__dirname, '../client/dist');
+if (fs.existsSync(CLIENT_DIST_DIR)) {
+  app.use(express.static(CLIENT_DIST_DIR));
+  
+  // SPA routing fallback: serve client index.html for non-API routes
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(CLIENT_DIST_DIR, 'index.html'));
+  });
+}
+
 // Privacy Cleanup Task: Runs every 15 minutes, deletes files older than 30 minutes
 const CLEANUP_INTERVAL = 15 * 60 * 1000;
 const MAX_FILE_AGE = 30 * 60 * 1000;
