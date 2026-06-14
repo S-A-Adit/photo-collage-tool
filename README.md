@@ -71,19 +71,18 @@ npm run dev
 
 ## 📦 Deployment & Hosting
 
-### Frontend
-The frontend is a static Vite application. It can be compiled for production using:
-```bash
-npm run build --prefix client
-```
-The resulting build files will be located in `client/dist` and can be hosted for free on:
-- **Vercel**
-- **Netlify**
-- **GitHub Pages**
+The application is optimized for single-service deployment (where the Express backend serves the built React frontend statically in production). This is ideal for free hosting platforms like Render.
 
-### Backend
-The backend runs an Express server. It can be deployed to:
-- **Render** (Free Web Service)
-- **Koyeb** (Free Instance)
+### Deploying to Render (Recommended)
 
-*Note: Since the backend uses ephemeral storage for processing images, consider integrating a third-party cloud storage service (e.g., Cloudinary) if you require persistent uploads.*
+1. Create a new **Web Service** on Render and connect your GitHub repository.
+2. Configure the following settings:
+   - **Build Command:** `npm run install:all && npm run build`
+   - **Start Command:** `npm start --prefix server`
+   - **Environment Variables:**
+     - `NODE_ENV`: `production`
+     - `NODE_VERSION`: `20`
+
+This compiles the frontend client assets into `client/dist` and spins up the Express server, which serves both the frontend static site and handles the backend collage processing endpoints under a single domain.
+
+*Note: Since the backend uses ephemeral storage for processing, uploaded files and generated collages will naturally expire when the free instance sleeps or restarts, matching the app's 30-minute auto-cleanup security logic.*
